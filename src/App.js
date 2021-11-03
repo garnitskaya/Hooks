@@ -1,4 +1,4 @@
-import { Component, useCallback, useEffect, useState } from 'react';
+import { Component, useCallback, useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import './App.css';
 
@@ -63,6 +63,11 @@ const calcValue = () => {
 }
 
 
+const countTotal = (num) => {
+    console.log('counting...');
+    return num + 10;
+}
+
 const Slider = (props) => {
 
     const [slide, setSlide] = useState(0);
@@ -77,13 +82,13 @@ const Slider = (props) => {
     //    setState(state => ({ ...state, autoplay: !state.autoplay }));
     //}
 
-    const getSomeImages = useCallback(() => {
+    const getSomeImages = useCallback(() => {//функция имитирует запрос на сервер 
         console.log('fetching')
         return [
             "https://bipbap.ru/wp-content/uploads/2017/04/priroda_kartinki_foto_03.jpg",
             "https://image.freepik.com/free-photo/wide-angle-shot-of-a-single-tree-growing-under-a-clouded-sky-during-a-sunset-surrounded-by-grass_181624-22807.jpg"
         ]
-    }, []);
+    }, [slide]);
 
 
     function logging() {
@@ -114,21 +119,26 @@ const Slider = (props) => {
         setAutoplay(autoplay => !autoplay);
     }
 
+    const total = useMemo(() => {
+        return countTotal(slide);//считает кол-во слайдов
+    }, [slide])
+
+    const style = useMemo(() => ({
+        color: slide > 4 ? 'green' : 'black'
+    }), [slide]);
+
+    useEffect(() => {
+        console.log('styles')
+    }, [style]);
+
     return (
         <Container>
             <div className="slider w-50 m-auto">
 
-                {/*{
-                    getSomeImages().map((url, i) => {
-                        return (
-                            <img key={i} className="d-block w-100" src={url} alt="slide" />
-                        )
-                    })
-                }*/}
-
                 <Slide getSomeImages={getSomeImages} />
 
                 <div className="text-center mt-5">Active slide {slide} <br /> {autoplay ? 'auto' : null}</div>
+                <div style={style} className="text-center mt-5">Total slides {total}</div>
                 <div className="buttons mt-3">
                     <button
                         className="btn btn-primary me-2"
