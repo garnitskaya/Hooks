@@ -172,6 +172,12 @@ const Slide = ({ getSomeImages }) => {
 function App() {
     const [slider, setSlider] = useState(true);
 
+    if (slider) { //*Динамический импрорт всегда возвращает промис с объектом модуля 
+        import('./someFunc')
+            .then(obj => obj.default())//*при дефолтном импорте
+            .catch()//* обязательно указываем catch
+    }
+
     return (
         <>
             <button onClick={() => setSlider(false)}>Click</button>
